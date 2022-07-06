@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
 
@@ -8,13 +9,17 @@ namespace WeatherForcast
     {
         static void Main(string[] args)
         {
-            var client = new HttpClient();
+            string key = File.ReadAllText("appsettings.json");           
+            string APIkey = JObject.Parse(key).GetValue("APIkey").ToString();
 
-            var weatherURL = "https://api.openweathermap.org/data/2.5/weather?lat=30.4383&lon=84.2807&appid=39626552851cd3ee9afbc77157d6b50e&units=imperial";
+            Console.WriteLine("Please enter Zipcode: ");
+            var zipCode = Console.ReadLine();
 
-            var weather = client.GetStringAsync(weatherURL).Result;
+            var APICall = $"http://api.openweathermap.org/data/2.5/weather?zip={zipCode}&units=imperial&appid={APIkey}";
 
-            Console.WriteLine(weather);
+            Console.WriteLine();
+
+            Console.WriteLine($"It is currently {WeatherSpecs.GetTemp(APICall)} degrees f in your location.");
         }
     }
 }
